@@ -1,0 +1,73 @@
+﻿@model IEnumerable<TaskManager.Models.AppTask>
+
+@{
+    ViewData["Title"] = "Project Tasks";
+}
+
+<div class="container mt-4">
+    <h1>Tasks for Project: <span class="text-primary">@ViewBag.ProjectName</span></h1>
+
+    <p>
+        <a asp-controller="AppTasks" asp-action="Create" class="btn btn-success">Create New Task</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to Project List</a>
+    </p>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Status</th>
+                <th>@Html.DisplayNameFor(model => model.Title)</th>
+                <th>@Html.DisplayNameFor(model => model.Priority)</th>
+                <th>@Html.DisplayNameFor(model => model.DueDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No tasks found for this project.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr class="@(item.IsCompleted ? "table-success" : "")">
+                        <td>
+                            <form asp-controller="AppTasks" asp-action="ToggleComplete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                @if (item.IsCompleted)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-success" title="Mark as Undone">
+                                        ✓ Done
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" title="Mark as Done">
+                                        ○ Pending
+                                    </button>
+                                }
+                            </form>
+                        </td>
+                        <td style="@(item.IsCompleted ? "text-decoration: line-through;" : "")">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            <span class="badge @(item.Priority > 3 ? "bg-danger" : "bg-info")">
+                                Priority: @item.Priority
+                            </span>
+                        </td>
+                        <td>@item.DueDate.ToShortDateString()</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>
+                            <a asp-controller="AppTasks" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a> |
+                            <a asp-controller="AppTasks" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

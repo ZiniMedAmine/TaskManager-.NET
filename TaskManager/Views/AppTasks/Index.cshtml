@@ -1,0 +1,83 @@
+﻿@model IEnumerable<TaskManager.Models.AppTask>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<form asp-controller="AppTasks" asp-action="SearchByPriority" method="get">
+    <p>
+        Filter by Priority (1-5): <input type="number" name="priority" />
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </p>
+</form>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class="@(item.IsCompleted ? "table-success" : "")">
+            <td>
+                <form asp-action="ToggleComplete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                    @if (item.IsCompleted)
+                    {
+                        <button type="submit" class="btn btn-sm btn-success" title="Mark as Undone">
+                            ✓ Done
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="Mark as Done">
+                            ○ Pending
+                        </button>
+                    }
+                </form>
+            </td>
+            <td style="@(item.IsCompleted ? "text-decoration: line-through;" : "")">
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.Description)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
